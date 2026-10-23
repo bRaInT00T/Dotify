@@ -50,14 +50,7 @@ macOS asks for these permissions the first time each feature is used:
 1. Download **Dotify-x.y.z.zip** from the [latest release](https://github.com/bRaInT00T/Dotify/releases/latest)
    and unzip it.
 2. Move **Dotify.app** to **Applications**.
-3. Open it. Dotify isn't notarized by Apple (that needs a paid Apple Developer ID), so the first launch is blocked
-   with "Dotify Not Opened". Click **Done**, then open **System Settings → Privacy & Security**, scroll to
-   *"Dotify" was blocked…* and click **Open Anyway**. You only do this once.
-
-   Or, in Terminal:
-   ```sh
-   xattr -dr com.apple.quarantine /Applications/Dotify.app
-   ```
+3. Open it. Dotify is signed with a Developer ID and notarized by Apple, so it opens like any downloaded app.
 4. Click **Allow** when macOS asks to let Dotify control Spotify. Look for the ♪ icon in the menu bar.
 5. Optional: connect Spotify for search, history and speaker switching (see **Connecting** below).
 

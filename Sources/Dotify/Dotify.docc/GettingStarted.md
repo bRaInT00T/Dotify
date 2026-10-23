@@ -17,10 +17,9 @@ Dotify only drives the desktop app; the Spotify web player won't work. There are
 
 1. Download **Dotify-x.y.z.zip** from the [latest release](https://github.com/bRaInT00T/Dotify/releases/latest)
    and unzip it. It runs on Apple silicon and Intel.
-2. Move **Dotify.app** to **Applications** and open it.
-3. Dotify isn't notarized by Apple, so the first launch is blocked with "Dotify Not Opened". Click **Done**, open
-   **System Settings → Privacy & Security**, and click **Open Anyway** next to *"Dotify" was blocked…*. You only do
-   this once. Alternatively, run `xattr -dr com.apple.quarantine /Applications/Dotify.app` in Terminal.
+2. Move **Dotify.app** to **Applications** and open it. It's signed with a Developer ID and notarized by Apple, so
+   macOS opens it normally.
+3. Click **Allow** when macOS asks to let Dotify control Spotify.
 
 ## Build from source
 
@@ -35,7 +34,8 @@ open build/Dotify.app
 ```
 
 `build-app.sh` builds a release binary with Swift Package Manager, wraps it in an app bundle with
-`Resources/Info.plist`, and ad-hoc signs it. `make-release.sh` makes the universal zip and checksum for a release.
+`Resources/Info.plist`, and ad-hoc signs it. `make-release.sh` makes the universal zip and checksum for a release,
+signed with a Developer ID and notarized when `SIGN_IDENTITY` and `NOTARY_PROFILE` are set.
 
 Run the tests with:
 
