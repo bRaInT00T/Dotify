@@ -15,6 +15,39 @@ Pick how much screen the player takes, and control it from the keyboard.
 
 Switching layouts keeps the player's top-left corner fixed. Dotify remembers where you left the player.
 
+### Ticker
+
+![Ticker: a single line with a playing indicator, song title and artist.](layout-ticker)
+
+### Pill
+
+![Pill: round thumbnail, title, artist, a play/pause button and a thin progress line.](layout-pill)
+
+### Bar
+
+![Bar: artwork, title, artist, a scrubbable progress bar with elapsed and remaining time, and transport controls.](layout-bar)
+
+### Card
+
+![Card: large artwork, title, progress with times, shuffle, transport, repeat, volume and a speaker button.](layout-card)
+
+### Album Art
+
+At rest it's just the cover. Hover to see the title, progress with times and controls.
+
+@Row {
+    @Column {
+        ![Album Art at rest: only the cover.](layout-art)
+    }
+    @Column {
+        ![Album Art on hover: title, progress bar with times and transport controls over the cover.](layout-art-hover)
+    }
+}
+
+### Column
+
+![Column: a narrow vertical strip with artwork, stacked transport controls and a progress line.](layout-column)
+
 ## Quick-access toolbar
 
 Hover the player and a small tab appears on its top edge. Click it, or press **E**, and the player grows upward to
@@ -25,6 +58,8 @@ show a toolbar:
 - **Search**: opens Search & Recently Played.
 - **Collapse arrow**: hides the toolbar.
 
+![The Bar layout with the toolbar open above it: speaker, layouts, search and collapse buttons.](toolbar)
+
 The player itself doesn't move. If it's pressed against the top of the screen, the toolbar opens below it instead.
 The toolbar closes on its own about a second after the pointer leaves, unless the player has keyboard focus.
 
@@ -32,6 +67,8 @@ The toolbar closes on its own about a second after the pointer leaves, unless th
 
 When the pointer is elsewhere and the player isn't focused, it fades to the **Dim When Idle** level: Off, 70%, 50%
 (default), 30% or 15%. It returns to the **Opacity** setting on hover or focus.
+
+![The Bar layout faded to 50% while idle.](dimmed)
 
 ## Keyboard shortcuts
 

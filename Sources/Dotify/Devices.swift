@@ -193,6 +193,8 @@ final class DeviceStore: ObservableObject {
     private let api: SpotifyAPI
     private let auth: SpotifyAuth
     private let airplayBrowser = AirPlayBrowser()
+    /// Demo mode: fixed devices, no hardware or network access.
+    private var demo = false
 
     init(api: SpotifyAPI, auth: SpotifyAuth) {
         self.api = api
@@ -223,6 +225,7 @@ final class DeviceStore: ObservableObject {
     }
 
     func refresh() {
+        guard !demo else { return }
         // Started on first open rather than at launch, so the Local Network prompt appears in context.
         airplayBrowser.start()
         reloadOutputs()
@@ -231,11 +234,13 @@ final class DeviceStore: ObservableObject {
     }
 
     private func reloadOutputs() {
+        guard !demo else { return }
         outputs = AudioOutputs.all()
         defaultOutput = AudioOutputs.defaultOutput()
     }
 
     func reloadConnect() async {
+        guard !demo else { return }
         guard auth.canControlPlayback else {
             connectDevices = []
             return
@@ -247,6 +252,16 @@ final class DeviceStore: ObservableObject {
         } catch {
             errorMessage = error.localizedDescription
         }
+    }
+
+    func loadDemo(outputs: [AudioOutput], defaultOutput: AudioDeviceID, bluetooth: [BluetoothSpeaker],
+                  airplay: [AirPlaySpeaker], connect: [ConnectDevice]) {
+        demo = true
+        self.outputs = outputs
+        self.defaultOutput = defaultOutput
+        self.bluetooth = bluetooth
+        self.airplay = airplay
+        connectDevices = connect
     }
 
     // MARK: - Switching

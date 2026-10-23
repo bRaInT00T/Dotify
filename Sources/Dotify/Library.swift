@@ -25,6 +25,8 @@ final class LibraryStore: ObservableObject {
     private let auth: SpotifyAuth
     private let spotify: SpotifyController
     private var searchTask: Task<Void, Never>?
+    /// Demo mode: fixed results, no network, nothing persisted.
+    private var demoResults: [MediaItem]?
     private var lastRecentsFetch = Date.distantPast
 
     private static let historyKey = "localHistory"
@@ -71,6 +73,20 @@ final class LibraryStore: ObservableObject {
         if isSearching { scheduleSearch(debounce: false) }
     }
 
+    func setFilters(_ kinds: Set<MediaKind>) {
+        guard !kinds.isEmpty else { return }
+        filters = kinds
+        UserDefaults.standard.set(kinds.map(\.rawValue), forKey: Self.filtersKey)
+        selection = nil
+        if isSearching { scheduleSearch(debounce: false) }
+    }
+
+    func loadDemo(recents: [MediaItem], results: [MediaItem]) {
+        demoResults = results
+        remoteRecents = recents
+        localRecents = []
+    }
+
     /// Option-click a chip to show only that kind.
     func solo(_ kind: MediaKind) {
         filters = [kind]
@@ -90,7 +106,7 @@ final class LibraryStore: ObservableObject {
     }
 
     func refreshRecents() async {
-        guard auth.isConnected else { return }
+        guard auth.isConnected, demoResults == nil else { return }
         lastRecentsFetch = Date()
         do {
             remoteRecents = try await api.recentlyPlayed()
@@ -108,6 +124,11 @@ final class LibraryStore: ObservableObject {
             results = []
             isLoading = false
             errorMessage = nil
+            return
+        }
+        if let demoResults {
+            results = demoResults
+            isLoading = false
             return
         }
         isLoading = true

@@ -82,10 +82,21 @@ Recently Played merges Spotify's history with a local history that ``SpotifyCont
 `swift test` covers the loopback callback server, history merging and filters, CoreAudio output listing, and the
 toolbar frame math. Tests use a separate Keychain service so they never touch the real sign-in.
 
-For visual checks, `DOTIFY_SNAPSHOT_DIR=/some/dir` makes the app render every layout (collapsed and expanded), the
-search window and the speaker window to PNGs, write the Spotify Connect and AirPlay device lists to `devices.txt`, and
-quit. Launch it with `open` so permission prompts are attributed to Dotify:
+## Screenshots and demo mode
+
+The images in these docs come from the app itself. `DOTIFY_SNAPSHOT_DIR=/some/dir` makes Dotify render every layout,
+the toolbar, idle dimming, the search window and the speaker picker to 2x PNGs (see `Screenshots`), then quit. It
+restores any settings it changed.
+
+`DOTIFY_DEMO=1` swaps in made-up content (see `Demo`): a fictional track with generated artwork, sample search
+results and history, sample speakers, and a pretend Spotify connection. Nothing in demo mode touches Spotify, the
+Keychain, your saved Client ID or your listening history, so the images never show real accounts, artwork or device
+names.
+
+`make-screenshots.sh` runs both against a separate app instance and copies the PNGs into
+`Sources/Dotify/Dotify.docc/Resources`:
 
 ```sh
-open -W --env DOTIFY_SNAPSHOT_DIR=/tmp/snaps build/Dotify.app
+./make-screenshots.sh   # refresh the images
+./generate-docs.sh      # rebuild the docs site
 ```

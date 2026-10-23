@@ -15,8 +15,13 @@ final class SpotifyAuth: ObservableObject {
     private static let refreshAccount = "refresh-token"
 
     @Published var clientID: String {
-        didSet { UserDefaults.standard.set(clientID.trimmingCharacters(in: .whitespaces), forKey: "spotifyClientID") }
+        didSet {
+            guard !isDemo else { return }
+            UserDefaults.standard.set(clientID.trimmingCharacters(in: .whitespaces), forKey: "spotifyClientID")
+        }
     }
+    /// Demo mode: pretend sign-in state for screenshots without touching the Keychain or saved Client ID.
+    private var isDemo = false
     @Published private(set) var isConnected: Bool
     @Published private(set) var isConnecting = false
     @Published var authError: String?
@@ -102,6 +107,13 @@ final class SpotifyAuth: ObservableObject {
         isConnected = false
         grantedScopes = []
         UserDefaults.standard.removeObject(forKey: "spotifyGrantedScopes")
+    }
+
+    func enableDemo(connected: Bool) {
+        isDemo = true
+        clientID = ""
+        isConnected = connected
+        grantedScopes = connected ? Self.playbackScopes.union(["user-read-recently-played"]) : []
     }
 
     // MARK: - Tokens

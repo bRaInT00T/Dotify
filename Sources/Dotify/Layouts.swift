@@ -169,10 +169,13 @@ struct PillLayout: View {
         }
         .padding(.leading, 6)
         .padding(.trailing, 8)
+        // Lift the row so the progress line sits below the artist name, not through it.
+        .padding(.bottom, 4)
         .overlay(alignment: .bottom) {
             ProgressBar(height: 2, interactive: false)
-                .padding(.horizontal, 20)
-                .padding(.bottom, 2)
+                .padding(.leading, 42)
+                .padding(.trailing, 20)
+                .padding(.bottom, 1)
         }
     }
 }

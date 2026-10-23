@@ -92,7 +92,7 @@ struct DevicesView: View {
                 .padding(.bottom, 10)
             }
         }
-        .background(VisualEffectBackground().ignoresSafeArea())
+        .background(GlassBackground().ignoresSafeArea())
         .environment(\.colorScheme, .dark)
     }
 

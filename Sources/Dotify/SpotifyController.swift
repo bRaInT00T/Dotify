@@ -1,4 +1,5 @@
 import AppKit
+import CoreImage
 import SwiftUI
 
 struct Track: Equatable {
@@ -24,6 +25,8 @@ final class SpotifyController: ObservableObject {
     @Published private(set) var state: PlaybackState = .notRunning
     @Published private(set) var track: Track?
     @Published private(set) var artwork: NSImage?
+    /// Heavily blurred artwork for the album-art background. Pre-rendered so it also shows in screenshots.
+    @Published private(set) var blurredArtwork: NSImage?
     @Published private(set) var accent: Color = Color(red: 0.12, green: 0.84, blue: 0.38)
     @Published private(set) var volume: Int = 50
     @Published private(set) var shuffling = false
@@ -162,9 +165,36 @@ final class SpotifyController: ObservableObject {
             guard let (data, _) = try? await URLSession.shared.data(from: url),
                   !Task.isCancelled,
                   let image = NSImage(data: data) else { return }
-            artwork = image
-            if let c = Self.accentColor(from: image) { accent = Color(nsColor: c) }
+            setArtwork(image)
         }
+    }
+
+    private func setArtwork(_ image: NSImage) {
+        artwork = image
+        blurredArtwork = Self.blurred(image)
+        if let c = Self.accentColor(from: image) { accent = Color(nsColor: c) }
+    }
+
+    private static func blurred(_ image: NSImage) -> NSImage? {
+        var rect = NSRect(origin: .zero, size: image.size)
+        guard let cg = image.cgImage(forProposedRect: &rect, context: nil, hints: nil) else { return nil }
+        let input = CIImage(cgImage: cg)
+        guard let output = input.clampedToExtent()
+            .applyingGaussianBlur(sigma: Double(cg.width) / 18)
+            .cropped(to: input.extent) as CIImage?,
+              let result = CIContext().createCGImage(output, from: input.extent) else { return nil }
+        return NSImage(cgImage: result, size: image.size)
+    }
+
+    /// Shows fixed made-up playback for screenshots. Doesn't touch Spotify or listening history.
+    func loadDemo(track: Track, artwork image: NSImage, position: Double) {
+        timer?.invalidate()
+        state = .playing
+        self.track = track
+        basePosition = position
+        baseDate = Date()
+        volume = 65
+        setArtwork(image)
     }
 
     /// Average color of the artwork, pushed bright enough to read on a dark background.

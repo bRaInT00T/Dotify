@@ -31,15 +31,17 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let model = AppModel.shared
         let library = model.library
         model.spotify.onTrackChange = { library.record($0) }
-        model.spotify.start()
+        if !Demo.isOn { model.spotify.start() }
         model.panel = PanelController(spotify: model.spotify, prefs: model.prefs)
         model.libraryPanel = LibraryPanelController(library: library, auth: model.auth, spotify: model.spotify)
         model.devicesPanel = DevicePanelController(devices: model.devices, auth: model.auth, spotify: model.spotify)
 
-        // Dev aid: DOTIFY_SNAPSHOT_DIR=/some/dir renders every layout to PNG, then quits.
+        if Demo.isOn { Demo.load(into: model) }
+
+        // Dev aid: DOTIFY_SNAPSHOT_DIR=/some/dir renders every feature to PNG, then quits.
         if let dir = snapshotDir {
-            Task { await snapshotLayouts(to: URL(fileURLWithPath: dir), model: model) }
-        } else if model.prefs.launchSpotifyOnStart && !model.spotify.isRunning {
+            Task { await Screenshots.run(to: URL(fileURLWithPath: dir), model: model) }
+        } else if model.prefs.launchSpotifyOnStart && !model.spotify.isRunning && !Demo.isOn {
             model.spotify.openSpotify(hidden: true)
         }
     }
@@ -47,95 +49,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     @MainActor
     func applicationWillTerminate(_ notification: Notification) {
         let model = AppModel.shared
-        if model.prefs.quitSpotifyOnExit && snapshotDir == nil {
+        if model.prefs.quitSpotifyOnExit && snapshotDir == nil && !Demo.isOn {
             model.spotify.quitSpotify()
         }
     }
 
     private var snapshotDir: String? {
         ProcessInfo.processInfo.environment["DOTIFY_SNAPSHOT_DIR"]
-    }
-
-    @MainActor
-    private func snapshotLayouts(to dir: URL, model: AppModel) async {
-        try? await Task.sleep(for: .seconds(4))
-        let original = model.prefs.layout
-        for layout in PlayerLayout.allCases {
-            model.prefs.layout = layout
-            try? await Task.sleep(for: .milliseconds(1500))
-            guard let view = model.panel?.panel.contentView else { continue }
-            view.layoutSubtreeIfNeeded()
-            view.display()
-            guard let rep = view.bitmapImageRepForCachingDisplay(in: view.bounds) else { continue }
-            view.cacheDisplay(in: view.bounds, to: rep)
-            try? rep.representation(using: .png, properties: [:])?
-                .write(to: dir.appendingPathComponent("\(layout.rawValue).png"))
-        }
-        // Expanded + hovered variants, to check the toolbar fits every layout.
-        if let state = model.panel?.state {
-            state.hovering = true
-            state.expanded = true
-            for layout in PlayerLayout.allCases {
-                model.prefs.layout = layout
-                try? await Task.sleep(for: .milliseconds(1200))
-                guard let view = model.panel?.panel.contentView else { continue }
-                view.layoutSubtreeIfNeeded()
-                view.display()
-                guard let rep = view.bitmapImageRepForCachingDisplay(in: view.bounds) else { continue }
-                view.cacheDisplay(in: view.bounds, to: rep)
-                try? rep.representation(using: .png, properties: [:])?
-                    .write(to: dir.appendingPathComponent("\(layout.rawValue)-expanded.png"))
-            }
-            state.expanded = false
-            state.hovering = false
-        }
-        model.prefs.layout = original
-
-        if let lib = model.libraryPanel {
-            lib.show(near: model.panel?.panel.frame)
-            try? await Task.sleep(for: .milliseconds(1500))
-            if let view = lib.panel.contentView {
-                view.layoutSubtreeIfNeeded()
-                view.display()
-                if let rep = view.bitmapImageRepForCachingDisplay(in: view.bounds) {
-                    view.cacheDisplay(in: view.bounds, to: rep)
-                    try? rep.representation(using: .png, properties: [:])?.write(to: dir.appendingPathComponent("library.png"))
-                }
-            }
-            // Typing while disconnected shows the Connect form.
-            if !model.auth.isConnected {
-                model.library.query = "test"
-                try? await Task.sleep(for: .milliseconds(800))
-                if let view = lib.panel.contentView {
-                    view.layoutSubtreeIfNeeded()
-                    view.display()
-                    if let rep = view.bitmapImageRepForCachingDisplay(in: view.bounds) {
-                        view.cacheDisplay(in: view.bounds, to: rep)
-                        try? rep.representation(using: .png, properties: [:])?.write(to: dir.appendingPathComponent("library-connect.png"))
-                    }
-                }
-                model.library.query = ""
-            }
-            lib.panel.orderOut(nil)
-        }
-
-        if let dev = model.devicesPanel {
-            dev.show(near: model.panel?.panel.frame)
-            dev.panel.setContentSize(NSSize(width: 320, height: 760))
-            try? await Task.sleep(for: .milliseconds(3500))
-            if let view = dev.panel.contentView {
-                view.layoutSubtreeIfNeeded()
-                view.display()
-                if let rep = view.bitmapImageRepForCachingDisplay(in: view.bounds) {
-                    view.cacheDisplay(in: view.bounds, to: rep)
-                    try? rep.representation(using: .png, properties: [:])?.write(to: dir.appendingPathComponent("devices.png"))
-                }
-            }
-            let lines = model.devices.connectDevices.map { "\($0.name) | \($0.type) | active=\($0.isActive) restricted=\($0.isRestricted)" }
-                + model.devices.airplay.map { "AirPlay: \($0.name) sonos=\($0.isSonos)" }
-            try? lines.joined(separator: "\n").write(to: dir.appendingPathComponent("devices.txt"), atomically: true, encoding: .utf8)
-        }
-        NSApp.terminate(nil)
     }
 }
 

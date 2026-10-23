@@ -7,6 +7,8 @@ Play on the Mac's outputs, Bluetooth speakers, AirPlay receivers or Spotify Conn
 Open the speaker picker with **D**, the speaker button in the toolbar or Card layout, or **Choose Speaker…** in the
 menu. It has four sections.
 
+![The speaker picker with This Mac, Bluetooth, AirPlay and Spotify Connect sections.](speakers)
+
 ## This Mac
 
 The Mac's audio outputs: built-in speakers, connected Bluetooth devices, USB audio and display audio. Picking one

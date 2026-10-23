@@ -4,6 +4,8 @@ A tiny floating Spotify player for macOS with six layouts, search, and speaker s
 
 ## Overview
 
+![The Card layout playing a song, with album art, progress, transport controls and volume.](layout-card)
+
 Dotify is a menu bar app with no Dock icon. It shows a borderless floating player that you can shrink to a single
 line of text or grow into a full card, so Spotify takes as little attention and screen space as you want.
 
@@ -22,6 +24,7 @@ AppleScript. Search, listening history and Spotify Connect speakers go through t
 
 - <doc:GettingStarted>
 - <doc:LayoutsAndControls>
+- <doc:SearchAndHistory>
 - <doc:ConnectingSpotify>
 - <doc:ChoosingSpeakers>
 
@@ -78,3 +81,8 @@ AppleScript. Search, listening history and Spotify Connect speakers go through t
 
 - ``Preferences``
 - ``PlayerLayout``
+
+### Screenshots
+
+- ``Screenshots``
+- ``Demo``

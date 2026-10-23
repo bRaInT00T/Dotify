@@ -4,6 +4,25 @@ A tiny floating macOS player for Spotify with six layouts, from a one-line ticke
 It lives in the menu bar (no Dock icon) and drives the Spotify desktop app over AppleScript,
 so Spotify itself can stay hidden in the background.
 
+<p align="center">
+  <img src="Sources/Dotify/Dotify.docc/Resources/layout-card@2x.png" width="328" alt="Card layout">
+  <img src="Sources/Dotify/Dotify.docc/Resources/search-results@2x.png" width="428" alt="Search with Songs and Podcasts filters">
+</p>
+
+<p align="center">
+  <img src="Sources/Dotify/Dotify.docc/Resources/toolbar@2x.png" width="468" alt="Bar layout with the quick-access toolbar open">
+</p>
+
+| Ticker | Pill | Column |
+|:---:|:---:|:---:|
+| <img src="Sources/Dotify/Dotify.docc/Resources/layout-ticker@2x.png" width="308" alt="Ticker layout"> | <img src="Sources/Dotify/Dotify.docc/Resources/layout-pill@2x.png" width="348" alt="Pill layout"> | <img src="Sources/Dotify/Dotify.docc/Resources/layout-column@2x.png" width="112" alt="Column layout"> |
+
+| Album Art (hover) | Speaker picker | Recently Played |
+|:---:|:---:|:---:|
+| <img src="Sources/Dotify/Dotify.docc/Resources/layout-art-hover@2x.png" width="268" alt="Album Art layout with hover controls"> | <img src="Sources/Dotify/Dotify.docc/Resources/speakers@2x.png" width="300" alt="Speaker picker"> | <img src="Sources/Dotify/Dotify.docc/Resources/search-recents@2x.png" width="320" alt="Recently Played"> |
+
+<sub>Screenshots use made-up demo content.</sub>
+
 ## Documentation
 
 **Read the docs: <https://braint00t.github.io/Dotify/documentation/dotify/>**
@@ -13,13 +32,15 @@ Full guides and code reference are in the DocC catalog at `Sources/Dotify/Dotify
 
 - Getting Started: build, permissions, Spotify in the background
 - Layouts and Controls: layouts, toolbar, idle dimming, shortcuts
+- Search and Recently Played: search, filters, history sources
 - Connecting Spotify: developer app setup, scopes, Spotify's limits
 - Choosing Speakers: Mac outputs, Bluetooth, AirPlay, Spotify Connect, Sonos
 - Architecture: how the pieces fit, persistence, testing
 
-Regenerate the site after changing code or articles:
+Regenerate the screenshots (made-up demo content) and the site after changing code or articles:
 
 ```sh
+./make-screenshots.sh
 ./generate-docs.sh
 ```
 
@@ -120,8 +141,7 @@ Press **D** in the player, use the speaker button in the Card layout, or pick **
   launches and quits Spotify when it quits; turn either off in the menu ("Start Spotify Hidden on Launch",
   "Quit Spotify When Dotify Quits").
 - Liking tracks, queue, and search aren't exposed by Spotify's AppleScript interface.
-- `DOTIFY_SNAPSHOT_DIR=/tmp/snaps "build/Dotify.app/Contents/MacOS/Dotify"` renders
-  every layout to PNG and quits (useful when tweaking designs).
+- `make-screenshots.sh` renders every feature with demo content into the DocC catalog (see the Architecture guide).
 
 ## License
 

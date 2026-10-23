@@ -72,7 +72,7 @@ struct LibraryView: View {
             Divider().opacity(0.4)
             content
         }
-        .background(VisualEffectBackground().ignoresSafeArea())
+        .background(GlassBackground().ignoresSafeArea())
         .environment(\.colorScheme, .dark)
         .onChange(of: library.focusRequest) { searchFocused = true }
         .onAppear { searchFocused = true }
@@ -227,12 +227,19 @@ struct MediaRow: View {
 
     var body: some View {
         HStack(spacing: 10) {
-            AsyncImage(url: item.imageURL) { image in
-                image.resizable().scaledToFill()
-            } placeholder: {
-                ZStack {
-                    Color.white.opacity(0.08)
-                    Image(systemName: item.kind.symbol).font(.system(size: 13)).foregroundStyle(.secondary)
+            Group {
+                // Local files (demo artwork) load synchronously so they appear in screenshots.
+                if let url = item.imageURL, url.isFileURL, let image = NSImage(contentsOf: url) {
+                    Image(nsImage: image).resizable().scaledToFill()
+                } else {
+                    AsyncImage(url: item.imageURL) { image in
+                        image.resizable().scaledToFill()
+                    } placeholder: {
+                        ZStack {
+                            Color.white.opacity(0.08)
+                            Image(systemName: item.kind.symbol).font(.system(size: 13)).foregroundStyle(.secondary)
+                        }
+                    }
                 }
             }
             .frame(width: 40, height: 40)

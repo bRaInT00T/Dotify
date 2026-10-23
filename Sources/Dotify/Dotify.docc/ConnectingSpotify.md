@@ -17,6 +17,9 @@ which requires a Spotify developer app that you own.
 ## Connect Dotify
 
 1. Press **F** to open Search, then type anything. The setup form appears.
+
+   ![The Connect Spotify form: steps to create a developer app, the redirect URI with a copy button, and a Client ID field.](search-connect)
+
 2. Paste the Client ID and click **Connect**.
 3. Approve in your browser. The tab says Dotify is connected.
 

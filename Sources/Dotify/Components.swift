@@ -43,16 +43,27 @@ struct WindowDragArea: NSViewRepresentable {
     func updateNSView(_ nsView: DragView, context: Context) {}
 }
 
+/// Translucent window glass. Demo captures use a solid stand-in, since offscreen captures can't draw it.
+struct GlassBackground: View {
+    var body: some View {
+        if Demo.isOn {
+            Color(red: 0.13, green: 0.13, blue: 0.15)
+        } else {
+            VisualEffectBackground()
+        }
+    }
+}
+
 struct Backdrop: View {
     @EnvironmentObject private var spotify: SpotifyController
     @EnvironmentObject private var prefs: Preferences
 
     var body: some View {
         ZStack {
-            VisualEffectBackground()
-            if prefs.artBackground, let art = spotify.artwork {
+            GlassBackground()
+            if prefs.artBackground, let art = spotify.blurredArtwork {
                 Color.clear
-                    .overlay(Image(nsImage: art).resizable().scaledToFill().blur(radius: 28))
+                    .overlay(Image(nsImage: art).resizable().scaledToFill())
                     .clipped()
                     .opacity(0.6)
                 Color.black.opacity(0.35)
