@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleName</key>
+	<string>Dotify</string>
+	<key>CFBundleDisplayName</key>
+	<string>Dotify</string>
+	<key>CFBundleIdentifier</key>
+	<string>local.dotify</string>
+	<key>CFBundleExecutable</key>
+	<string>Dotify</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>1.0</string>
+	<key>CFBundleVersion</key>
+	<string>1</string>
+	<key>LSMinimumSystemVersion</key>
+	<string>14.0</string>
+	<key>LSUIElement</key>
+	<true/>
+	<key>NSHighResolutionCapable</key>
+	<true/>
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>Dotify lists your paired Bluetooth speakers and headphones so you can connect and play on them.</string>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>Dotify looks for AirPlay and Sonos speakers on your network so you can play on them.</string>
+	<key>NSBonjourServices</key>
+	<array>
+		<string>_airplay._tcp</string>
+		<string>_sonos._tcp</string>
+	</array>
+	<key>NSAppleEventsUsageDescription</key>
+	<string>Dotify controls playback in the Spotify app and reads what's currently playing.</string>
+</dict>
+</plist>
