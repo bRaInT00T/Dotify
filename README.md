@@ -23,6 +23,49 @@ so Spotify itself can stay hidden in the background.
 
 <sub>Screenshots use made-up demo content.</sub>
 
+## Requirements
+
+| | Player & playback | Search, history & Spotify Connect speakers |
+|---|:---:|:---:|
+| macOS 14 Sonoma or later, Apple silicon or Intel | ✓ | ✓ |
+| [Spotify desktop app](https://www.spotify.com/download/mac/), installed and signed in | ✓ | ✓ |
+| Spotify account | Free or Premium | **Premium** (on the developer app's owner account) |
+| Free [Spotify developer app](https://developer.spotify.com/dashboard) and its Client ID | — | ✓ |
+| Internet connection | ✓ (Spotify streams) | ✓ |
+
+Dotify only drives the **desktop** app; the Spotify web player won't work. It has no other runtime dependencies:
+everything else is built into macOS.
+
+macOS asks for these permissions the first time each feature is used:
+
+| Permission | When | Needed for |
+|---|---|---|
+| Automation → Spotify | First launch | Reading what's playing and controlling playback (required) |
+| Bluetooth | First time the speaker picker opens | Listing and connecting paired speakers |
+| Local Network | First time the speaker picker opens | Finding AirPlay and Sonos speakers |
+| Keychain | After connecting Spotify | Staying signed in |
+
+## Install
+
+1. Download **Dotify-x.y.z.zip** from the [latest release](https://github.com/bRaInT00T/Dotify/releases/latest)
+   and unzip it.
+2. Move **Dotify.app** to **Applications**.
+3. Open it. Dotify isn't notarized by Apple (that needs a paid Apple Developer ID), so the first launch is blocked
+   with "Dotify Not Opened". Click **Done**, then open **System Settings → Privacy & Security**, scroll to
+   *"Dotify" was blocked…* and click **Open Anyway**. You only do this once.
+
+   Or, in Terminal:
+   ```sh
+   xattr -dr com.apple.quarantine /Applications/Dotify.app
+   ```
+4. Click **Allow** when macOS asks to let Dotify control Spotify. Look for the ♪ icon in the menu bar.
+5. Optional: connect Spotify for search, history and speaker switching (see **Connecting** below).
+
+To check the download, compare its SHA-256 with the `.sha256` file on the release page:
+```sh
+shasum -a 256 ~/Downloads/Dotify-*.zip
+```
+
 ## Documentation
 
 **Read the docs: <https://braint00t.github.io/Dotify/documentation/dotify/>**
@@ -47,17 +90,31 @@ Regenerate the screenshots (made-up demo content) and the site after changing co
 To browse it locally, serve the parent of a `Dotify` folder that points at `docs/`, then open
 `http://localhost:8000/Dotify/documentation/dotify`.
 
-## Build & run
+## Build from source
+
+Needs Xcode 16 or later (or a Swift 5.10+ toolchain). The first build needs internet access: Swift Package Manager
+fetches [swift-docc-plugin](https://github.com/swiftlang/swift-docc-plugin), which is only used to generate the
+docs and isn't part of the app.
 
 ```sh
-./build-app.sh            # builds "build/Dotify.app"
-./build-app.sh --install  # also copies it to /Applications
-open "build/Dotify.app"
+./build-app.sh             # builds build/Dotify.app for this Mac
+./build-app.sh --install   # also copies it to /Applications
+./build-app.sh --universal # Apple silicon + Intel
+swift test                 # run the tests
+open build/Dotify.app
 ```
 
-On first launch macOS asks to let Dotify control Spotify. Click **Allow**. If you denied it,
-re-enable it in System Settings → Privacy & Security → Automation. The app is ad-hoc signed, so you
-may be asked again after each rebuild.
+Locally built copies are ad-hoc signed, so macOS may ask for Automation and Keychain access again after each
+rebuild.
+
+### Making a release
+
+```sh
+./make-release.sh   # universal build → build/Dotify-<version>.zip + .sha256
+```
+
+Bump `CFBundleShortVersionString` in `Resources/Info.plist`, run the script, then attach both files to a GitHub
+release tagged `v<version>`.
 
 ## Layouts
 
@@ -140,7 +197,7 @@ Press **D** in the player, use the speaker button in the Card layout, or pick **
 - Requires the Spotify desktop app (not the web player). By default Dotify starts Spotify hidden when it
   launches and quits Spotify when it quits; turn either off in the menu ("Start Spotify Hidden on Launch",
   "Quit Spotify When Dotify Quits").
-- Liking tracks, queue, and search aren't exposed by Spotify's AppleScript interface.
+- Liking tracks and viewing the play queue aren't supported yet.
 - `make-screenshots.sh` renders every feature with demo content into the DocC catalog (see the Architecture guide).
 
 ## License

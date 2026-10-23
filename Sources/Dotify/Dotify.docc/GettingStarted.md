@@ -1,23 +1,41 @@
 # Getting Started
 
-Build Dotify, grant its permissions and start playing.
+Install or build Dotify, grant its permissions and start playing.
 
 ## Requirements
 
-- macOS 14 or later
-- Xcode 16 or later, or the matching Swift toolchain
-- The Spotify desktop app (not the web player)
+| | Player & playback | Search, history & Spotify Connect |
+|---|---|---|
+| macOS 14 Sonoma or later, Apple silicon or Intel | Required | Required |
+| Spotify desktop app, installed and signed in | Required | Required |
+| Spotify account | Free or Premium | Premium, on the developer app's owner account |
+| Free Spotify developer app and its Client ID | Not needed | Required (<doc:ConnectingSpotify>) |
 
-## Build and run
+Dotify only drives the desktop app; the Spotify web player won't work. There are no other runtime dependencies.
+
+## Install the prebuilt app
+
+1. Download **Dotify-x.y.z.zip** from the [latest release](https://github.com/bRaInT00T/Dotify/releases/latest)
+   and unzip it. It runs on Apple silicon and Intel.
+2. Move **Dotify.app** to **Applications** and open it.
+3. Dotify isn't notarized by Apple, so the first launch is blocked with "Dotify Not Opened". Click **Done**, open
+   **System Settings → Privacy & Security**, and click **Open Anyway** next to *"Dotify" was blocked…*. You only do
+   this once. Alternatively, run `xattr -dr com.apple.quarantine /Applications/Dotify.app` in Terminal.
+
+## Build from source
+
+Building needs Xcode 16 or later (or a Swift 5.10+ toolchain). The first build needs internet access, because Swift
+Package Manager fetches swift-docc-plugin, which is only used to generate these docs.
 
 ```sh
-./build-app.sh            # builds build/Dotify.app
-./build-app.sh --install  # also copies it to /Applications
+./build-app.sh             # builds build/Dotify.app for this Mac
+./build-app.sh --install   # also copies it to /Applications
+./build-app.sh --universal # Apple silicon + Intel
 open build/Dotify.app
 ```
 
 `build-app.sh` builds a release binary with Swift Package Manager, wraps it in an app bundle with
-`Resources/Info.plist`, and ad-hoc signs it.
+`Resources/Info.plist`, and ad-hoc signs it. `make-release.sh` makes the universal zip and checksum for a release.
 
 Run the tests with:
 
