@@ -122,3 +122,9 @@ Press **D** in the player, use the speaker button in the Card layout, or pick **
 - Liking tracks, queue, and search aren't exposed by Spotify's AppleScript interface.
 - `DOTIFY_SNAPSHOT_DIR=/tmp/snaps "build/Dotify.app/Contents/MacOS/Dotify"` renders
   every layout to PNG and quits (useful when tweaking designs).
+
+## License
+
+MIT © 2026 Nicholas Wolk. See [LICENSE](LICENSE).
+
+Dotify is not affiliated with or endorsed by Spotify. Spotify is a trademark of Spotify AB.
