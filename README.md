@@ -6,7 +6,10 @@ so Spotify itself can stay hidden in the background.
 
 ## Documentation
 
-Full guides and code reference are in the DocC catalog at `Sources/Dotify/Dotify.docc`, published to `docs/`:
+**Read the docs: <https://braint00t.github.io/Dotify/documentation/dotify/>**
+
+Full guides and code reference are in the DocC catalog at `Sources/Dotify/Dotify.docc`, published to `docs/`
+(GitHub Pages serves `main` → `/docs`):
 
 - Getting Started: build, permissions, Spotify in the background
 - Layouts and Controls: layouts, toolbar, idle dimming, shortcuts
