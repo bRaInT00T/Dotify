@@ -116,6 +116,17 @@ rebuild.
 Bump `CFBundleShortVersionString` in `Resources/Info.plist`, run the script, then attach both files to a GitHub
 release tagged `v<version>`.
 
+For a **signed and notarized** release (opens without the "Open Anyway" step), you need a paid Apple Developer
+Program membership with a **Developer ID Application** certificate in your login keychain, and a notarization
+profile saved once with `xcrun notarytool store-credentials`. Then:
+
+```sh
+SIGN_IDENTITY="Developer ID Application: Your Name (TEAMID)" NOTARY_PROFILE=dotify-notary ./make-release.sh
+```
+
+The script signs with the hardened runtime and `Resources/Dotify.entitlements` (which allows controlling
+Spotify), submits to Apple, staples the ticket, and checks that Gatekeeper accepts it.
+
 ## Layouts
 
 | Key | Layout    | Size     | For                                              |
